@@ -97,8 +97,15 @@ export default function LayoutIndex() {
                 onClick: () => navigate(routes.app),
               },
               {
-                title: 'Nó',
-                icon: Icons.CalendarClock,
+                title: 'Aplicações',
+                icon: Icons.List,
+                variant: 'default',
+                active: pathname === routes.applications.list,
+                onClick: () => navigate(routes.applications.list),
+              },
+              {
+                title: 'Nós',
+                icon: Icons.Navigation,
                 variant: 'default',
                 active: pathname === routes.node.list,
                 onClick: () => navigate(routes.node.list),

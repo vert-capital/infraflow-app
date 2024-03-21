@@ -1,5 +1,5 @@
 
-import { defer, type LoaderFunctionArgs } from '@remix-run/node';
+import { defer } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import { useCallback, useState } from 'react';
 import ReactFlow, { addEdge, applyEdgeChanges, applyNodeChanges, Background } from 'reactflow';
@@ -7,9 +7,9 @@ import 'reactflow/dist/style.css';
 import { NodeService } from '~/services/node.service';
 import FormFlow from './form/form-flow';
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader() {
   const service = new NodeService();
-  const initialNodes = await service.list(request);
+  const initialNodes = await service.list();
   const initialEdges =  [
     { id: 'a1-a2', source: 'A-1', target: 'A-2' },
     { id: 'a2-b', source: 'A-2', target: 'B' },

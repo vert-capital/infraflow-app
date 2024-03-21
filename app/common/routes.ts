@@ -5,6 +5,11 @@ export default {
     new: '/nodes/new',
     detail: '/nodes/{id}',
   },
+  applications: {
+    list: '/applications',
+    new: '/applications/new',
+    detail: '/applications/{id}',
+  },
   api: {
     login: '/api/auth/login',
     loginDev: '/api/auth/login/dev',

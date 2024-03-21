@@ -3,7 +3,7 @@ import { NodeModel } from '~/models/node.model';
 
 export class NodeService {
 
-  async list(request: Request): Promise<NodeModel[]> {
+  async list(): Promise<NodeModel[]> {
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const response = [
@@ -99,12 +99,9 @@ export class NodeService {
     return new NodeModel(response);
   }
 
-  async add(data: any) {
-    const response = await api('/node', {
-      method: 'POST',
-      body: data,
-    });
+  add(data: any) {
+    console.log('add', data);
 
-    return new NodeModel(response);
+    return data;
   }
 }

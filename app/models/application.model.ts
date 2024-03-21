@@ -1,16 +1,22 @@
-export class AplicationModel {
+import { NodeModel } from "./node.model";
+
+export class ApplicationModel {
     id: string;
     name: string;
     description: string;
+    nodes: NodeModel[] = [];
+    edgs: any[] = [];
 
     constructor(data: any) {
         this.id = data.id;
         this.name = data.name;
         this.description = data.description;
+        this.nodes = data.nodes?.map((item: any) => new NodeModel(item)) || [];
+        this.edgs = data?.edgs || [];
     }
 
-    static validate(data: any): AplicationModel {
-        return new AplicationModel(data);
+    static validate(data: any): ApplicationModel {
+        return new ApplicationModel(data);
     }
 
     toNodeJson() {
