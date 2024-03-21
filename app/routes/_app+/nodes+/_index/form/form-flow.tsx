@@ -2,11 +2,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ActionFunctionArgs, json } from '@remix-run/node';
 import { useActionData, useNavigation, useSubmit } from '@remix-run/react';
 import { formDataValues, handleError } from '@vert-capital/common';
-import { Button, Form, FormControl, FormField, FormItem, FormLabel, Icons, sonner } from '@vert-capital/design-system-ui';
+import { Button, Form, FormControl, FormField, FormItem, FormLabel, Icons, Input, SelectAdvanced, sonner } from '@vert-capital/design-system-ui';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { RegisterNodeModel, TypesNode } from "~/models/node.model";
+import { RegisterNodeModel, TypesNode, getTypesNodesOptions } from "~/models/node.model";
 import { NodeService } from '~/services/node.service';
 
 export default function FormFlow() {
@@ -14,13 +14,15 @@ export default function FormFlow() {
   const actionData = useActionData<typeof action>();
   const transition = useNavigation();
 
+  const typesNodeOptions = getTypesNodesOptions();
+
   const form = useForm<RegisterNodeModel>({
     resolver: zodResolver(RegisterNodeModel.schema),
     defaultValues: {
       type: TypesNode.Input,
       position: { x: 0, y: 0 },
-      data: { label: '' },
       parentNode: '',
+      label: ''
     }
   })
 
@@ -51,30 +53,49 @@ export default function FormFlow() {
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col">
             <FormField
               control={form.control}
-              name="data.label"
+              name="label"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor={field.name}>Nome do nó</FormLabel>
+                  <FormLabel htmlFor="label">Nome do nó</FormLabel>
                   <FormControl>
-                    <input
+                    <Input
+                      placeholder="Nome do nó"
+                      type="label"
+                      autoComplete="off"
+                      autoCorrect="off"
                       {...field}
-                      type="text"
-                      id={field.name}
-                      className="input"
                     />
                   </FormControl>
                 </FormItem>
                 )}
             >
-
             </FormField>
           </div>
-          
-
+          {/* Crie um formulário que gere um flow principal do type group, esse nó pode receber vários sub flows, onde você pode escolher se é do tipo input, output ou ambos (sem type), inserir um nome e dizer a qual sub flow já cadastrado ele se relaciona */}
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="type">Tipo do nó</FormLabel>
+                  <FormControl>
+                  <SelectAdvanced
+                    placeholder="Selecione o tipo do nó"
+                    selected={field.value as any}
+                    onChangeValue={(value) => form.setValue('type', value as any)}
+                    options={typesNodeOptions}
+                    {...field}
+                  />
+                  </FormControl>
+                </FormItem>
+              )}
+            >
+            </FormField>
+    
           <Button
             type="submit"
             className="w-full"

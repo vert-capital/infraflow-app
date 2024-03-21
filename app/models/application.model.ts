@@ -28,3 +28,17 @@ export class ApplicationModel {
         };
     }
 }
+
+export class ApplicationRegisterModel {
+    name: string;
+    description: string;
+
+    constructor(data: any) {
+        this.name = data.name;
+        this.description = data.description;
+    }
+
+    static validate(data: any): ApplicationRegisterModel {
+        return new ApplicationRegisterModel(data);
+    }
+}

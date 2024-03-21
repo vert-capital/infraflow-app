@@ -41,6 +41,7 @@ export class NodeModel {
   focusable?: boolean;
   style?: React.CSSProperties;
   className?: string;
+  label?: string;
 
   constructor(data?: any) {
     this.id = data?.id || '';
@@ -69,6 +70,7 @@ export class NodeModel {
     this.focusable = data?.focusable || true;
     this.style = data?.style || {};
     this.className = data?.className || '';
+    this.label = data?.label || '';
   }
 }
 
@@ -76,29 +78,39 @@ export enum TypesNode {
   Input = 'input',
   Output = 'output',
   Group = 'group',
+  IO = 'undefined'
+}
+
+export function getTypesNodesOptions() {
+    return Object.keys(TypesNode).map((key) => {
+      return {
+        value: key.toLocaleLowerCase() as "Input" | "Output" | "Group" | "IO",
+        label: key 
+      }
+    });
 }
 
 export class RegisterNodeModel {
   type: TypesNode;
   position: XYPosition;
-  data: any;
   style?: React.CSSProperties;
   parentNode?: string;
+  label?: string;
 
   constructor(data: any) {
     this.type = data.type;
     this.position = data.position;
-    this.data = data.data;
     this.style = data?.style || {};
     this.parentNode = data?.parentNode;
+    this.label = data?.label;
   }
 
   public static schema = z
     .object({
       type: z.nativeEnum(TypesNode),
       position: z.object({ x: z.number(), y: z.number() }),
-      data: z.any(),
       style: z.object({}).optional(),
       parentNode: z.string().optional(),
+      label: z.string().optional(),
     })
 }
