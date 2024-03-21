@@ -21,5 +21,11 @@ export default {
       new: '/api/nodes/new',
       edit: '/api/nodes/{id}/edit',
     },
+    applications: {
+      list: '/api/applications',
+      detail: '/api/applications/{id}',
+      new: '/api/applications/new',
+      edit: '/api/applications/{id}/edit',
+    },
   },
 };

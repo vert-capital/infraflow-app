@@ -1,20 +1,19 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ActionFunctionArgs, json } from '@remix-run/node';
 import { useActionData, useNavigation, useSubmit } from '@remix-run/react';
-import { formDataValues, handleError } from '@vert-capital/common';
+import { handleError } from '@vert-capital/common';
 import { Button, Form, FormControl, FormField, FormItem, FormLabel, Icons, Input, SelectAdvanced, sonner } from '@vert-capital/design-system-ui';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { RegisterNodeModel, TypesNode, getTypesNodesOptions } from "~/models/node.model";
-import { NodeService } from '~/services/node.service';
+import { action } from '..';
 
 export default function FormFlow() {
   const submit = useSubmit();
   const actionData = useActionData<typeof action>();
   const transition = useNavigation();
 
-  const typesNodeOptions = getTypesNodesOptions();
+  const typeNodesOptions = getTypesNodesOptions()
 
   const form = useForm<RegisterNodeModel>({
     resolver: zodResolver(RegisterNodeModel.schema),
@@ -75,7 +74,6 @@ export default function FormFlow() {
             >
             </FormField>
           </div>
-          {/* Crie um formulário que gere um flow principal do type group, esse nó pode receber vários sub flows, onde você pode escolher se é do tipo input, output ou ambos (sem type), inserir um nome e dizer a qual sub flow já cadastrado ele se relaciona */}
             <FormField
               control={form.control}
               name="type"
@@ -87,7 +85,7 @@ export default function FormFlow() {
                     placeholder="Selecione o tipo do nó"
                     selected={field.value as any}
                     onChangeValue={(value) => form.setValue('type', value as any)}
-                    options={typesNodeOptions}
+                    options={typeNodesOptions}
                     {...field}
                   />
                   </FormControl>
@@ -110,16 +108,4 @@ export default function FormFlow() {
       </Form>
     </>
   );
-}
-
-export async function action({ request }: ActionFunctionArgs) {
-  const { ...values } = await formDataValues({ request });
-  try {
-    const service = new NodeService();
-    await service.add(values);
-
-    console.log('values', values);
-  } catch (error) {
-    return json({ error, lastSubmission: values });
-  }
 }

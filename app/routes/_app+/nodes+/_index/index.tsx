@@ -1,8 +1,9 @@
 
-import { defer } from '@remix-run/node';
+import { ActionFunctionArgs, defer, json } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
+import { formDataValues } from '@vert-capital/common';
 import { useCallback, useState } from 'react';
-import ReactFlow, { Background, addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow';
+import { addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { NodeService } from '~/services/node.service';
 import FormFlow from './form/form-flow';
@@ -49,7 +50,7 @@ export default function NodeList() {
         </div>
       </div>
       <div className="basis-2/3">
-        <ReactFlow
+ {/*        <ReactFlow
           nodes={nodes}
           edges={edges}
           onNodesChange={onNodesChange}
@@ -60,8 +61,22 @@ export default function NodeList() {
           attributionPosition="top-right"
         >
           <Background />
-      </ReactFlow>
+      </ReactFlow> */}
       </div>
     </div>
   );
 }
+
+
+export async function action({ request }: ActionFunctionArgs) {
+  const { ...values } = await formDataValues({ request });
+  try {
+    const service = new NodeService();
+    await service.add(values);
+
+    console.log('values', values);
+  } catch (error) {
+    return json({ error, lastSubmission: values });
+  }
+}
+

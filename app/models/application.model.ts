@@ -42,3 +42,17 @@ export class ApplicationRegisterModel {
         return new ApplicationRegisterModel(data);
     }
 }
+
+export class ApplicationTableModel {
+    id: string;
+    name: string;
+    description: string;
+    hasNode: 'Sim' | 'Não';
+
+    constructor(data: any) {
+        this.id = data.id;
+        this.name = data.name;
+        this.description = data.description;
+        this.hasNode = data?.nodes?.length ? 'Sim' : 'Não';
+    }
+}
