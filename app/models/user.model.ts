@@ -68,3 +68,44 @@ export class UserModel {
     return data;
   }
 }
+
+export class UserLoginModel {
+  email: string;
+  password: string;
+
+  constructor(data: any) {
+    this.email = data.email;
+    this.password = data.password;
+  }
+
+  public static schema = z.object({
+    email: z
+      .string()
+      .trim()
+      .min(1, { message: 'Deve conter pelo menos 1 caracter' })
+      .email({ message: 'E-mail inválido' }),
+    password: z
+      .string()
+      .trim()
+      .min(1, { message: 'Campo obrigatório' })
+      .min(3, {
+        message: 'Deve conter pelo menos 3 caracteres',
+      })
+      .max(50, {
+        message: 'Deve conter no máximo 50 caracteres',
+      }),
+  });
+
+  validate() {
+    UserLoginModel.schema.parse(this);
+    return this;
+  }
+
+  toJson() {
+    return {
+      email: this.email,
+      password: this.password,
+    };
+  }
+}
+

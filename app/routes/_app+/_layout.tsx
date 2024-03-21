@@ -97,11 +97,11 @@ export default function LayoutIndex() {
                 onClick: () => navigate(routes.app),
               },
               {
-                title: 'Solicitações',
+                title: 'Nó',
                 icon: Icons.CalendarClock,
                 variant: 'default',
-                active: pathname === routes.absence.list,
-                onClick: () => navigate(routes.absence.list),
+                active: pathname === routes.node.list,
+                onClick: () => navigate(routes.node.list),
               },
             ]}
           />

@@ -1,9 +1,9 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
-import { AbsenceService } from '~/services/absence.service';
+import { NodeService } from '~/services/node.service';
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const service = new AbsenceService();
+  const service = new NodeService();
   const response = await service.list(request);
   return json(response);
 }

@@ -34,12 +34,13 @@ const authenticated: Props<ResultProps> = (
           if (process.env.NODE_ENV === 'production') {
             reject(redirect(routes.api.login));
           } else {
+            reject(redirect(routes.api.loginDev));
             // ATENÇÃO: Apenas para ambiente de desenvolvimento
-            reject(
+/*             reject(
               redirect(
                 `/auth/${process.env.TOKEN_ONLY_DEV}/${process.env.REFRESH_TOKEN_ONLY_DEV}`
               )
-            );
+            ); */
           }
         }
       });

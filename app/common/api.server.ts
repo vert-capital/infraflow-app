@@ -19,7 +19,7 @@ const getHeaders = async (init: RequestInit | undefined) => {
   const session = await getSession(headersInit.get('Cookie'));
 
   if (session.has('token')) {
-    headers.append('Authorization', `JWT ${session.get('token')}`);
+    headers.append('Authorization', `${session.get('token')}`);
   }
 
   if (session.has('refreshToken')) {
@@ -41,7 +41,8 @@ export default async function api<T>(
 
   const res = await fetch(input, {
     headers,
-    method: 'GET',
+    method: !init?.method ? 'GET' : init.method,
+    body: init?.body ? JSON.stringify(init.body) : undefined,
   });
 
   const contentType = res.headers.get('content-type');

@@ -7,10 +7,10 @@ import {
   Icons,
   Separator,
 } from '@vert-capital/design-system-ui';
-import { AbsenceService } from '~/services/absence.service';
+import { NodeService } from '~/services/node.service';
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
-  const service = new AbsenceService();
+  const service = new NodeService();
   const data = await service.detail({
     id: params.id as string,
     request,
@@ -18,7 +18,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   return json({ data });
 }
 
-export default function AbsenceDetail() {
+export default function NodeDetail() {
   const { data } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
 
@@ -37,7 +37,7 @@ export default function AbsenceDetail() {
             <Icons.ArrowLeft className="h-6 w-6" />
           </Button>
           <div className="w-full flex justify-start items-center ml-20">
-            <h1 className="text-3xl font-bold">Solicitação de Ausência</h1>
+            <h1 className="text-3xl font-bold">Visão sistemica</h1>
           </div>
         </div>
       </div>
@@ -45,9 +45,8 @@ export default function AbsenceDetail() {
       <div className="w-full h-auto bg-transparent flex flex-col justify-start items-start">
         <Card className="w-full">
           <CardContent className="space-y-4 flex flex-col justify-start items-start">
-            <h1>{data.nome}</h1>
-            <p>{data.email}</p>
-          </CardContent>
+            <h1>{data.id}</h1>
+=          </CardContent>
         </Card>
       </div>
     </>

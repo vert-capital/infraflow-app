@@ -1,19 +1,20 @@
 export default {
   app: '/',
-  absence: {
-    list: '/absences',
-    new: '/absences/new',
-    detail: '/absences/{id}',
+  node: {
+    list: '/nodes',
+    new: '/nodes/new',
+    detail: '/nodes/{id}',
   },
   api: {
     login: '/api/auth/login',
+    loginDev: '/api/auth/login/dev',
     logout: '/api/auth/logout',
     prefsUser: '/api/user/prefs',
-    absences: {
-      list: '/api/absences',
-      detail: '/api/absences/{id}',
-      new: '/api/absences/new',
-      edit: '/api/absences/{id}/edit',
+    nodes: {
+      list: '/api/nodes',
+      detail: '/api/nodes/{id}',
+      new: '/api/nodes/new',
+      edit: '/api/nodes/{id}/edit',
     },
   },
 };
