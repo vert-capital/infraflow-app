@@ -17,7 +17,7 @@ export enum Position {
 export class NodeModel {
   id: string;
   position: XYPosition;
-  data: string;
+  data: { label: '' } | string;
   type?: any;
   sourcePosition?: Position;
   targetPosition?: Position;
@@ -42,11 +42,12 @@ export class NodeModel {
   style?: React.CSSProperties;
   className?: string;
   label?: string;
+  childrens?: NodeModel[] = [];
 
   constructor(data?: any) {
     this.id = data?.id || '';
     this.position = data?.position || { x: 0, y: 0 };
-    this.data = data?.data || '';
+    this.data = data?.data || {label: this.label || ''};
     this.type = data?.type || undefined;
     this.sourcePosition = data?.sourcePosition || Position.Right;
     this.targetPosition = data?.targetPosition || Position.Left;
@@ -71,6 +72,7 @@ export class NodeModel {
     this.style = data?.style || {};
     this.className = data?.className || '';
     this.label = data?.label || '';
+    this.childrens = data?.childrens?.map((item: any) => new NodeModel(item)) || [];
   }
 }
 
@@ -113,4 +115,16 @@ export class RegisterNodeModel {
       parentNode: z.string().optional(),
       label: z.string().optional(),
     })
+}
+
+export class NodeTableModel {
+  id: string;
+  name: string;
+  type: string;
+
+  constructor(data: any) {
+    this.id = data?.id || '';
+    this.name = data?.data?.label || '';
+    this.type = data?.type || '';
+  }
 }

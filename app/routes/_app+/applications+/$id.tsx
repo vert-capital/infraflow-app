@@ -4,6 +4,7 @@ import {
     Button,
     Card,
     CardContent,
+    CardTitle,
     Icons,
     Separator,
 } from '@vert-capital/design-system-ui';
@@ -44,6 +45,14 @@ export default function ApplicationDetail() {
       <Separator className="mb-4" />
       <div className="w-full h-auto bg-transparent flex flex-col justify-start items-start">
         <Card className="w-full">
+            <CardTitle>
+            <div className="flex justify-end items-center space-x-3">
+                <Button type="button" size={'default'}>
+                    Adicionar visão sistemica
+                <Icons.Plus className="h-4 w-4 ml-2" />
+                </Button>
+            </div>
+            </CardTitle>
           <CardContent className="space-y-4 flex flex-col justify-start items-start">
             <h1>{data.name}</h1>
             <p>{data.description}</p>

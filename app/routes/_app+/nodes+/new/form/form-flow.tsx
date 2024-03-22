@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { RegisterNodeModel, TypesNode, getTypesNodesOptions } from "~/models/node.model";
-import { action } from '..';
+import { action } from '../index';
 
 export default function FormFlow() {
   const submit = useSubmit();

@@ -7,13 +7,13 @@ import {
 } from '@vert-capital/design-system-ui';
 import routes from '~/common/routes';
 
-import { ApplicationTableModel } from '~/models/application.model';
+import { NodeTableModel } from '~/models/node.model';
 
-export const columns: RT.ColumnDef<ApplicationTableModel>[] = [
+export const columns: RT.ColumnDef<NodeTableModel>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => (
-      <DataTableHeader title="Aplicação" column={column} />
+      <DataTableHeader title="Nó" column={column} />
     ),
     cell: ({ row }) => {
       const label: string = row.getValue('name');
@@ -27,15 +27,15 @@ export const columns: RT.ColumnDef<ApplicationTableModel>[] = [
     },
   },
   {
-    accessorKey: 'description',
+    accessorKey: 'type',
     header: ({ column }) => (
-      <DataTableHeader title="Descrição" column={column} />
+      <DataTableHeader title="Tipo" column={column} />
     ),
     cell: ({ row }) => {
-      const description = row.getValue('description') as string;
+      const type = row.getValue('type') as string;
       return (
-        <div className="line-clamp-1 min-w-[150px]" title="Tem visão sistêmica">
-          {description}
+        <div className="line-clamp-1 min-w-[150px]" title="Tipo de nó">
+          {type}
         </div>
       );
     },
@@ -51,7 +51,7 @@ export const columns: RT.ColumnDef<ApplicationTableModel>[] = [
             <Link
               title="Editar"
               to={urlTransform({
-                url: routes.applications.detail,
+                url: routes.node.detail,
                 params: {
                   id: id,
                 },
