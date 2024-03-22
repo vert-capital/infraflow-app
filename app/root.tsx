@@ -23,6 +23,7 @@ import {
 import styles from '@vert-capital/design-system-ui/dist/style.css?url';
 import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import 'reactflow/dist/style.css';
 import routes from './common/routes';
 import mainStyle from './main.css?url';
 
