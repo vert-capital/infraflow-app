@@ -1,5 +1,5 @@
 import api from '~/common/api.server';
-import { ApplicationModel, ApplicationTableModel } from '~/models/application.model';
+import { ApplicationModel, ApplicationRegisterModel, ApplicationTableModel } from '~/models/application.model';
 import { TableResponseModel } from '~/models/table.model';
 
 export class ApplicationService {  
@@ -31,9 +31,12 @@ export class ApplicationService {
     return new ApplicationModel(response);
   }
 
-  add(data: any) {
-    console.log('add', data);
-
-    return data;
+  async add(values: any): Promise<ApplicationModel> {
+    const payload = new ApplicationRegisterModel(values);
+    const response = await api<ApplicationModel>('/application', {
+      body: payload.toJson() as any,
+      method: 'POST',
+    });
+    return new ApplicationModel(response);
   }
 }

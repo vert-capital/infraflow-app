@@ -1,13 +1,13 @@
-import { useSearchParams } from '@remix-run/react';
+import { Link, useSearchParams } from '@remix-run/react';
 import {
-    Button,
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-    DataTable,
-    Icons,
-    cn,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  DataTable,
+  Icons,
+  cn,
 } from '@vert-capital/design-system-ui';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
@@ -37,7 +37,7 @@ export default function ApplicationsTable() {
     isRefetching,
     refetch,
   } = useQuery({
-    queryKey: [queryKey.absenceList, { page }],
+    queryKey: [queryKey.applicationList, { page }],
     queryFn: loadData,
     retry: false,
     keepPreviousData: false,
@@ -69,10 +69,12 @@ export default function ApplicationsTable() {
               className={cn('h-4 w-4', { 'animate-fast-spin': isRefetching })}
             />
           </Button>
-          <Button type="button" size={'default'}>
-            Nova aplicação
-            <Icons.Plus className="h-4 w-4 ml-2" />
-          </Button>
+          <Link to={routes.applications.new}>
+            <Button type="button" size={'default'}>
+              Nova aplicação
+              <Icons.Plus className="h-4 w-4 ml-2" />
+            </Button>
+          </Link>
         </div>
       </CardHeader>
       <CardContent>

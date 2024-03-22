@@ -41,6 +41,13 @@ export class ApplicationRegisterModel {
     static validate(data: any): ApplicationRegisterModel {
         return new ApplicationRegisterModel(data);
     }
+
+    toJson() {
+        return {
+            name: this.name,
+            description: this.description,
+        };
+    }
 }
 
 export class ApplicationTableModel {

@@ -1,3 +1,3 @@
 export default {
-  absenceList: 'absence-list',
+  applicationList: 'application-list',
 };
