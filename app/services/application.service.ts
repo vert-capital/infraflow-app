@@ -4,10 +4,8 @@ import { TableResponseModel } from '~/models/table.model';
 
 export class ApplicationService {  
     async list(request: Request): Promise<TableResponseModel<ApplicationTableModel>> {
-    const url = new URL(request.url);
-
     const response = await api<any>(
-      `/application/?${url.searchParams.toString()}`,
+      `/application/`,
       request
     );
 
