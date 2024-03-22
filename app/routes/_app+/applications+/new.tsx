@@ -32,7 +32,9 @@ export default function NewApplication() {
           },
         );
       }
-    } else {
+    }
+    
+    if (actionData?.data) {
       sonner.toast.success('Cadastro realizado com sucesso', {
         description: 'Aplicação cadastrada com sucesso',
         closeButton: true,
@@ -115,6 +117,6 @@ export async function action({ request }: { request: Request }) {
     const response = await service.add(values);
     return json({ error: '', lastSubmission: '', data: response });
   } catch (error) {
-    return json({ error, lastSubmission: values });
+    return json({ error, lastSubmission: values, data: false });
   }
 }

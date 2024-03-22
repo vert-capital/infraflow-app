@@ -59,7 +59,7 @@ export class ApplicationTableModel {
     constructor(data: any) {
         this.id = data.id;
         this.name = data.name;
-        this.description = data.description;
+        this.description = data?.description || '';
         this.hasNode = data?.nodes?.length ? 'Sim' : 'Não';
     }
 }

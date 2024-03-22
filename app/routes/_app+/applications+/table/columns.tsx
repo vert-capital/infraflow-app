@@ -1,9 +1,9 @@
 import { Link } from '@remix-run/react';
 import { urlTransform } from '@vert-capital/common';
 import {
-    DataTableHeader,
-    Icons,
-    type RT
+  DataTableHeader,
+  Icons,
+  type RT
 } from '@vert-capital/design-system-ui';
 import routes from '~/common/routes';
 
@@ -11,12 +11,12 @@ import { ApplicationTableModel } from '~/models/application.model';
 
 export const columns: RT.ColumnDef<ApplicationTableModel>[] = [
   {
-    accessorKey: 'nome',
+    accessorKey: 'name',
     header: ({ column }) => (
       <DataTableHeader title="Aplicação" column={column} />
     ),
     cell: ({ row }) => {
-      const label: string = row.getValue('nome');
+      const label: string = row.getValue('name');
       return (
         <div className="flex justify-start items-center space-x-2">
           <div title={label} className="w-[180px] truncate">

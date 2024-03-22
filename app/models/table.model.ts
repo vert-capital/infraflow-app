@@ -17,7 +17,7 @@ export class TableResponseModel<T, F = any> {
     this.totalRegistros = data?.count || 0;
     this.registros = data?.results
       ? data.results.map((item: any) => new this.registersConstructor(item))
-      : [];
+      : data && data.length ? data.map((item: any) => new this.registersConstructor(item)) : [];
     this.rodape =
       data?.footer && this.registerFooterConstructor
         ? new this.registerFooterConstructor(data.footer)

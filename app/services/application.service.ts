@@ -8,7 +8,7 @@ export class ApplicationService {
       `/application/`,
       request
     );
-
+    console.log(response)
     return new TableResponseModel<ApplicationTableModel>(
       ApplicationTableModel,
       response
