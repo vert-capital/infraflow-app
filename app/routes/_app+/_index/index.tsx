@@ -1,16 +1,14 @@
 import { LinksFunction, LoaderFunctionArgs, json } from '@remix-run/node';
-import { MetaFunction, useLoaderData, useMatches } from '@remix-run/react';
+import { MetaFunction, useLoaderData } from '@remix-run/react';
 import { useCallback, useState } from 'react';
-import ReactFlow, { addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow';
-import config from '~/common/config';
-import { UserModel } from '~/models/user.model';
+import ReactFlow, { Controls, addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow';
 import customStyle from './custom.css?url';
 
 import { FlowModel } from '~/models/flow.model';
 import { FlowService } from '~/services/flow.service';
 
 export const meta: MetaFunction = () => {
-  return [{ title: `Dashboard | ${config.appName}` }];
+  return [{ title: `Dashboard | InflaFlow` }];
 };
 
 export const links: LinksFunction = () => [
@@ -30,7 +28,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function Index() {
   const { nodes, edges } = useLoaderData<typeof loader>();
-  
 
   const [stateNodes, setStateNodes] = useState(nodes);
   const [stateEdges, setStateEdges] = useState(edges);
@@ -48,25 +45,23 @@ export default function Index() {
     [setStateEdges]
   );
 
-
-  const { user } = useMatches()[1].data as {
-    user: UserModel;
-  };
   return (
     <div
       id="content-main"
-      className="w-full flex flex-col items-start justify-between"
+      className="w-full"
     >
-      <div className="w-full flex flex-col justify-center items-center">
-
-      <ReactFlow
-        nodes={stateNodes}
-        edges={stateEdges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        fitView
-      />
+      <div className="w-full">
+        <ReactFlow
+          nodes={stateNodes}
+          edges={stateEdges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          fitView
+          className="absolute object-center	items-center"
+        >
+          <Controls />
+        </ReactFlow>
       </div>
 
     </div>

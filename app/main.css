@@ -40,3 +40,9 @@
 .menu-item:first-child::before {
   content: none; /* O primeiro item não tem uma linha */
 }
+
+.react-flow	{
+  height: 100vh;
+  width: 100%;
+  position: absolute !important;
+}
