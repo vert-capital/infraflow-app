@@ -27,5 +27,6 @@ export default {
       new: '/api/applications/new',
       edit: '/api/applications/{id}/edit',
     },
+    flow: '/api/flow',
   },
 };

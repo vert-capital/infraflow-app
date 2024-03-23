@@ -5,14 +5,14 @@ export class ApplicationModel {
     name: string;
     description: string;
     nodes: NodeModel[] = [];
-    edgs: any[] = [];
+    edges: any[] = [];
 
     constructor(data: any) {
         this.id = data.id;
         this.name = data.name;
         this.description = data.description;
         this.nodes = data.nodes?.map((item: any) => new NodeModel(item)) || [];
-        this.edgs = data?.edgs || [];
+        this.edges = data?.edges || [];
     }
 
     static validate(data: any): ApplicationModel {
