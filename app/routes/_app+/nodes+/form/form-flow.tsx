@@ -70,17 +70,17 @@ export default function FormFlow() {
                     />
                   </FormControl>
                 </FormItem>
-                )}
+              )}
             >
             </FormField>
           </div>
-            <FormField
-              control={form.control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="type">Tipo do nó</FormLabel>
-                  <FormControl>
+          <FormField
+            control={form.control}
+            name="type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel htmlFor="type">Tipo do nó</FormLabel>
+                <FormControl>
                   <SelectAdvanced
                     placeholder="Selecione o tipo do nó"
                     selected={field.value as any}
@@ -88,12 +88,12 @@ export default function FormFlow() {
                     options={typeNodesOptions}
                     {...field}
                   />
-                  </FormControl>
-                </FormItem>
-              )}
-            >
-            </FormField>
-    
+                </FormControl>
+              </FormItem>
+            )}
+          >
+          </FormField>
+
           <Button
             type="submit"
             className="w-full"

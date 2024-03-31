@@ -1,13 +1,21 @@
-import api from '~/common/api.server';
-import { ApplicationModel, ApplicationRegisterModel, ApplicationTableModel } from '~/models/application.model';
-import { TableResponseModel } from '~/models/table.model';
+import api from "~/common/api.server";
+import {
+  ApplicationModel,
+  ApplicationRegisterModel,
+  ApplicationTableModel,
+} from "~/models/application.model";
+import { TableResponseModel } from "~/models/table.model";
 
-export class ApplicationService {  
-    async list(request: Request): Promise<TableResponseModel<ApplicationTableModel>> {
-    const response = await api<any>(
-      `/application/`,
-      request
-    );
+export class ApplicationService {
+  async all(request: Request): Promise<ApplicationModel[]> {
+    const response = await api<any>(`/application/`, request);
+    return response.map((item: any) => new ApplicationModel(item));
+  }
+
+  async list(
+    request: Request
+  ): Promise<TableResponseModel<ApplicationTableModel>> {
+    const response = await api<any>(`/application/`, request);
     return new TableResponseModel<ApplicationTableModel>(
       ApplicationTableModel,
       response
@@ -21,18 +29,15 @@ export class ApplicationService {
     id: string;
     request: Request;
   }): Promise<ApplicationModel> {
-    const response = await api<ApplicationModel>(
-      `/application/${id}`,
-      request
-    );
+    const response = await api<ApplicationModel>(`/application/${id}`, request);
     return new ApplicationModel(response);
   }
 
   async add(values: any): Promise<ApplicationModel> {
     const payload = new ApplicationRegisterModel(values);
-    const response = await api<ApplicationModel>('/application', {
+    const response = await api<ApplicationModel>("/application", {
       body: payload.toJson() as any,
-      method: 'POST',
+      method: "POST",
     });
     return new ApplicationModel(response);
   }

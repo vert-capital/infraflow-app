@@ -107,8 +107,8 @@ export default function LayoutIndex() {
                 title: 'Nós',
                 icon: Icons.Navigation,
                 variant: 'default',
-                active: pathname === routes.node.list,
-                onClick: () => navigate(routes.node.list),
+                active: pathname === routes.nodes.list,
+                onClick: () => navigate(routes.nodes.list),
               },
             ]}
           />

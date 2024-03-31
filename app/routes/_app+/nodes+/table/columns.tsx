@@ -51,7 +51,7 @@ export const columns: RT.ColumnDef<NodeTableModel>[] = [
             <Link
               title="Editar"
               to={urlTransform({
-                url: routes.node.detail,
+                url: routes.nodes.detail,
                 params: {
                   id: id,
                 },
