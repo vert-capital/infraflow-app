@@ -1,9 +1,4 @@
-import {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  json,
-  redirect,
-} from "@remix-run/node";
+import { ActionFunctionArgs, LoaderFunctionArgs, json } from "@remix-run/node";
 import {
   useActionData,
   useLoaderData,
@@ -11,7 +6,7 @@ import {
   useNavigation,
   useSubmit,
 } from "@remix-run/react";
-import { formDataValues, handleError } from "@vert-capital/common";
+import { formDataValues } from "@vert-capital/common";
 import {
   Button,
   Card,
@@ -26,9 +21,7 @@ import {
   SelectAdvanced,
   SelectItemOptions,
   Separator,
-  sonner,
 } from "@vert-capital/design-system-ui";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import {
@@ -49,6 +42,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }));
 }
 
+export async function action({ request }: ActionFunctionArgs) {
+  const { ...values } = await formDataValues({ request });
+  try {
+    const service = new NodeService();
+    await service.add(values);
+  } catch (error) {
+    return json({ error, lastSubmission: values });
+  }
+}
+
 export default function NewNode() {
   const navigate = useNavigate();
   const transition = useNavigation();
@@ -64,28 +67,28 @@ export default function NewNode() {
     submit(formData, { method: "post", replace: true });
   };
 
-  useEffect(() => {
-    if (actionData?.error && actionData.error !== "") {
-      sonner.toast.error("Erro ao realizar cadastro", {
-        description: handleError(actionData.error).message,
-        closeButton: true,
-      });
-      if (actionData.lastSubmission) {
-        Object.entries(actionData.lastSubmission).forEach(
-          ([key, value]: any) => {
-            form.setValue(key, value);
-          }
-        );
-      }
-    }
-    if (actionData?.data) {
-      sonner.toast.success("Cadastro realizado com sucesso", {
-        description: "Aplicação cadastrada com sucesso",
-        closeButton: true,
-      });
-      redirect("/applications");
-    }
-  }, [actionData]);
+  // useEffect(() => {
+  //   if (actionData?.error && actionData.error !== "") {
+  //     sonner.toast.error("Erro ao realizar cadastro", {
+  //       description: handleError(actionData.error).message,
+  //       closeButton: true,
+  //     });
+  //     if (actionData.lastSubmission) {
+  //       Object.entries(actionData.lastSubmission).forEach(
+  //         ([key, value]: any) => {
+  //           form.setValue(key, value);
+  //         }
+  //       );
+  //     }
+  //   }
+  //   if (actionData?.data) {
+  //     sonner.toast.success("Cadastro realizado com sucesso", {
+  //       description: "Aplicação cadastrada com sucesso",
+  //       closeButton: true,
+  //     });
+  //     redirect("/nodes");
+  //   }
+  // }, [actionData]);
 
   const form = useForm<NodeModel>({
     defaultValues: {
@@ -184,7 +187,7 @@ export default function NewNode() {
                               placeholder="Selecione a aplicação pai"
                               selected={field.value as any}
                               onChangeValue={(value) =>
-                                form.setValue("type", value as any)
+                                form.setValue("application_id", value as any)
                               }
                               key={field.name}
                               options={applicationsOptions}
@@ -200,7 +203,7 @@ export default function NewNode() {
                   <div className="w-full">
                     <FormField
                       control={form.control}
-                      name="type"
+                      name="parentNode"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel htmlFor="label">ID nó pai</FormLabel>
@@ -221,13 +224,13 @@ export default function NewNode() {
                   <div className="w-full ">
                     <FormField
                       control={form.control}
-                      name="type"
+                      name="position.x"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel htmlFor="label">Posição (X)</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Id do nó pai"
+                              placeholder="Posição X"
                               type="text"
                               autoComplete="off"
                               autoCorrect="off"
@@ -242,13 +245,13 @@ export default function NewNode() {
                   <div className="w-full ">
                     <FormField
                       control={form.control}
-                      name="type"
+                      name="position.y"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel htmlFor="label">Posição (Y)</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Id do nó pai"
+                              placeholder="Posição Y"
                               type="text"
                               autoComplete="off"
                               autoCorrect="off"
@@ -278,14 +281,4 @@ export default function NewNode() {
       </div>
     </div>
   );
-}
-
-export async function action({ request }: ActionFunctionArgs) {
-  const { ...values } = await formDataValues({ request });
-  try {
-    const service = new NodeService();
-    await service.add(values);
-  } catch (error) {
-    return json({ error, lastSubmission: values });
-  }
 }

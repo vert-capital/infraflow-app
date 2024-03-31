@@ -26,7 +26,7 @@ export const links: LinksFunction = () => [
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const service = new NodeService();
-  const nodes = await service.list(request);
+  const nodes = await service.all(request);
 
   const edges = [
     {
