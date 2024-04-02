@@ -7,35 +7,43 @@ import {
 } from "@vert-capital/design-system-ui";
 import routes from "~/common/routes";
 
-import { ApplicationTableModel } from "~/models/application.model";
+import { EdgeTableModel } from "~/models/edge.model";
 
-export const columns: RT.ColumnDef<ApplicationTableModel>[] = [
+export const columns: RT.ColumnDef<EdgeTableModel>[] = [
   {
-    accessorKey: "name",
-    header: ({ column }) => (
-      <DataTableHeader title="Aplicação" column={column} />
-    ),
+    accessorKey: "id",
+    header: ({ column }) => <DataTableHeader title="ID" column={column} />,
     cell: ({ row }) => {
-      const label: string = row.getValue("name");
+      const id: string = row.getValue("id");
       return (
         <div className="flex justify-start items-center space-x-2">
-          <div title={label} className="w-[180px] truncate">
-            {label}
+          <div title={id} className="w-[200px]">
+            {id}
           </div>
         </div>
       );
     },
   },
   {
-    accessorKey: "description",
-    header: ({ column }) => (
-      <DataTableHeader title="Descrição" column={column} />
-    ),
+    accessorKey: "source",
+    header: ({ column }) => <DataTableHeader title="Source" column={column} />,
     cell: ({ row }) => {
-      const description = row.getValue("description") as string;
+      const source = row.getValue("source") as string;
       return (
         <div className="line-clamp-1 min-w-[150px]" title="Tem visão sistêmica">
-          {description}
+          {source}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "target",
+    header: ({ column }) => <DataTableHeader title="Target" column={column} />,
+    cell: ({ row }) => {
+      const target = row.getValue("target") as string;
+      return (
+        <div className="line-clamp-1 min-w-[150px]" title="Tem visão sistêmica">
+          {target}
         </div>
       );
     },
@@ -51,7 +59,7 @@ export const columns: RT.ColumnDef<ApplicationTableModel>[] = [
             <Link
               title="Editar"
               to={urlTransform({
-                url: routes.applications.detail,
+                url: routes.edges.detail,
                 params: {
                   id: id,
                 },

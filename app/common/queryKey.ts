@@ -1,3 +1,4 @@
 export default {
-  applicationList: 'application-list',
+  applicationList: "application-list",
+  edgeList: "edge-list",
 };

@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export class EdgeModel {
   id: string;
   animated: boolean;
@@ -63,6 +65,45 @@ export class EdgeModel {
       source: this.source,
       target: this.target,
     };
+  }
+}
+
+export class RegisterEdgeModel {
+  id: string;
+  style?: React.CSSProperties;
+  node_id: string;
+  label?: string;
+  source: string;
+  target: string;
+
+  constructor(data: any) {
+    this.id = data.id;
+    this.node_id = data.node_id;
+    this.style = data?.style || {};
+    this.source = data?.source;
+    this.target = data?.target;
+  }
+
+  public static schema = z.object({
+    style: z.object({}).optional(),
+    node_id: z.string(),
+    source: z.string(),
+    target: z.string(),
+    label: z.string().optional(),
+  });
+}
+
+export class EdgeTableModel {
+  id: string;
+  label: string;
+  source: string;
+  target: string;
+
+  constructor(data: any) {
+    this.id = data.id;
+    this.label = data.label;
+    this.source = data.source;
+    this.target = data.target;
   }
 }
 

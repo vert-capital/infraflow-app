@@ -41,4 +41,8 @@ export class ApplicationService {
     });
     return new ApplicationModel(response);
   }
+
+  async delete(id: string): Promise<void> {
+    return await api(`/application/${id}`, { method: "DELETE" });
+  }
 }
