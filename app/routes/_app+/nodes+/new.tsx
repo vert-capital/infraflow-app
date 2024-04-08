@@ -6,7 +6,7 @@ import {
   useNavigation,
   useSubmit,
 } from "@remix-run/react";
-import { formDataValues } from "@vert-capital/common";
+import { handleError } from "@vert-capital/common";
 import {
   Button,
   Card,
@@ -21,14 +21,12 @@ import {
   SelectAdvanced,
   SelectItemOptions,
   Separator,
+  sonner,
 } from "@vert-capital/design-system-ui";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import {
-  NodeModel,
-  RegisterNodeModel,
-  getTypesNodesOptions,
-} from "~/models/node.model";
+import { RegisterNodeModel, getTypesNodesOptions } from "~/models/node.model";
 import { ApplicationService } from "~/services/application.service";
 import { NodeService } from "~/services/node.service";
 
@@ -42,61 +40,50 @@ export async function loader({ request }: LoaderFunctionArgs) {
   }));
 }
 
-export async function action({ request }: ActionFunctionArgs) {
-  const { ...values } = await formDataValues({ request });
-  try {
-    const service = new NodeService();
-    await service.add(values);
-  } catch (error) {
-    return json({ error, lastSubmission: values });
-  }
-}
-
 export default function NewNode() {
-  const navigate = useNavigate();
-  const transition = useNavigation();
   const submit = useSubmit();
   const actionData = useActionData<typeof action>();
+  const transition = useNavigation();
+  const navigate = useNavigate();
+  const redirect = (url: string) => navigate(url);
+  const goBack = () => navigate(-1);
 
   const typeNodesOptions = getTypesNodesOptions();
 
-  const goBack = () => navigate(-1);
+  useEffect(() => {
+    if (actionData?.error && actionData.error !== "") {
+      sonner.toast.error("Erro ao realizar cadastro", {
+        description: handleError(actionData.error).message,
+        closeButton: true,
+      });
+      if (actionData.lastSubmission) {
+        Object.entries(actionData.lastSubmission).forEach(
+          ([key, value]: any) => {
+            form.setValue(key, value);
+          }
+        );
+      }
+    }
+    if (actionData?.data) {
+      sonner.toast.success("Cadastro realizado com sucesso", {
+        description: "Aplicação cadastrada com sucesso",
+        closeButton: true,
+      });
+      redirect("/nodes");
+    }
+  }, [actionData]);
 
   const onSubmit = async (values: z.infer<any>) => {
-    const formData = new RegisterNodeModel(values);
-    submit(formData, { method: "post", replace: true });
+    submit({ json: JSON.stringify(values) }, { method: "post", replace: true });
   };
 
-  // useEffect(() => {
-  //   if (actionData?.error && actionData.error !== "") {
-  //     sonner.toast.error("Erro ao realizar cadastro", {
-  //       description: handleError(actionData.error).message,
-  //       closeButton: true,
-  //     });
-  //     if (actionData.lastSubmission) {
-  //       Object.entries(actionData.lastSubmission).forEach(
-  //         ([key, value]: any) => {
-  //           form.setValue(key, value);
-  //         }
-  //       );
-  //     }
-  //   }
-  //   if (actionData?.data) {
-  //     sonner.toast.success("Cadastro realizado com sucesso", {
-  //       description: "Aplicação cadastrada com sucesso",
-  //       closeButton: true,
-  //     });
-  //     redirect("/nodes");
-  //   }
-  // }, [actionData]);
-
-  const form = useForm<NodeModel>({
+  const form = useForm<RegisterNodeModel>({
     defaultValues: {
       type: "",
-      label: "",
+      data: { label: "" },
       application_id: "",
       position: { x: 0, y: 0 },
-      parentNode: "",
+      parent_node_id: "",
     },
   });
 
@@ -132,10 +119,10 @@ export default function NewNode() {
                   <div className="w-full">
                     <FormField
                       control={form.control}
-                      name="label"
+                      name="data.label"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel htmlFor="label">Label</FormLabel>
+                          <FormLabel htmlFor="data.label">Label</FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Label"
@@ -162,7 +149,7 @@ export default function NewNode() {
                               placeholder="Selecione o tipo do nó"
                               selected={field.value as any}
                               onChangeValue={(value) =>
-                                form.setValue("type", value as any)
+                                form.setValue("type", value[0] as any)
                               }
                               options={typeNodesOptions}
                               {...field}
@@ -187,7 +174,7 @@ export default function NewNode() {
                               placeholder="Selecione a aplicação pai"
                               selected={field.value as any}
                               onChangeValue={(value) =>
-                                form.setValue("application_id", value as any)
+                                form.setValue("application_id", value[0] as any)
                               }
                               key={field.name}
                               options={applicationsOptions}
@@ -203,10 +190,12 @@ export default function NewNode() {
                   <div className="w-full">
                     <FormField
                       control={form.control}
-                      name="parentNode"
+                      name="parent_node_id"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel htmlFor="label">ID nó pai</FormLabel>
+                          <FormLabel htmlFor="parent_node_id">
+                            ID nó pai
+                          </FormLabel>
                           <FormControl>
                             <Input
                               placeholder="Id do nó pai"
@@ -281,4 +270,17 @@ export default function NewNode() {
       </div>
     </div>
   );
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const body = JSON.parse(formData.get("json"));
+
+  try {
+    const service = new NodeService();
+    const response = await service.add(body);
+    return json({ error: "", lastSubmission: "", data: response });
+  } catch (error) {
+    return json({ error, lastSubmission: body, data: false });
+  }
 }

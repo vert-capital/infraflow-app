@@ -24,7 +24,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { RegisterEdgeModel } from "~/models/edge.model";
-import { ApplicationService } from "~/services/application.service";
+import { EdgeService } from "~/services/edge.service";
 
 export default function NewApplication() {
   const submit = useSubmit();
@@ -62,7 +62,7 @@ export default function NewApplication() {
         description: "Aplicação cadastrada com sucesso",
         closeButton: true,
       });
-      redirect("/applications");
+      redirect("/edges");
     }
   }, [actionData]);
 
@@ -178,7 +178,7 @@ export default function NewApplication() {
 export async function action({ request }: { request: Request }) {
   const { ...values } = await formDataValues({ request });
   try {
-    const service = new ApplicationService();
+    const service = new EdgeService();
     const response = await service.add(values);
     return json({ error: "", lastSubmission: "", data: response });
   } catch (error) {

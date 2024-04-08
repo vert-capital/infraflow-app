@@ -93,22 +93,20 @@ export function getTypesNodesOptions() {
 }
 
 export class RegisterNodeModel {
-  id: string;
-  type: "input" | "output" | "group" | "undefined";
+  type: string;
   position: XYPosition;
   style?: React.CSSProperties;
   parent_node_id?: string;
   application_id: string;
-  label?: string;
+  data?: any;
 
   constructor(data: any) {
-    this.id = data.id;
     this.type = data.type;
     this.position = data.position;
     this.style = data?.style || {};
-    this.parent_node_id = data?.parent_node_id;
+    this.parent_node_id = data?.parent_node_id || null;
     this.application_id = data?.application_id;
-    this.label = data?.label;
+    this.data = data?.data;
   }
 
   public static schema = z.object({

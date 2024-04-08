@@ -1,11 +1,30 @@
-import { json, useActionData, useNavigate, useNavigation, useSubmit } from '@remix-run/react';
-import { formDataValues, handleError } from '@vert-capital/common';
-import { Button, Card, CardContent, Form, FormControl, FormField, FormItem, FormLabel, Icons, Input, Separator, sonner } from '@vert-capital/design-system-ui';
-import { useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { ApplicationRegisterModel } from '~/models/application.model';
-import { ApplicationService } from '~/services/application.service';
+import {
+  json,
+  useActionData,
+  useNavigate,
+  useNavigation,
+  useSubmit,
+} from "@remix-run/react";
+import { formDataValues, handleError } from "@vert-capital/common";
+import {
+  Button,
+  Card,
+  CardContent,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  Icons,
+  Input,
+  Separator,
+  sonner,
+} from "@vert-capital/design-system-ui";
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { ApplicationRegisterModel } from "~/models/application.model";
+import { ApplicationService } from "~/services/application.service";
 
 export default function NewApplication() {
   const submit = useSubmit();
@@ -18,16 +37,14 @@ export default function NewApplication() {
 
   const form = useForm<ApplicationRegisterModel>({
     defaultValues: {
-      name: '',
-      description: ''
-    }
-  })
+      name: "",
+      description: "",
+    },
+  });
 
   useEffect(() => {
-    console.log(actionData)
-
-    if (actionData?.error && actionData.error !== '') {
-      sonner.toast.error('Erro ao realizar cadastro', {
+    if (actionData?.error && actionData.error !== "") {
+      sonner.toast.error("Erro ao realizar cadastro", {
         description: handleError(actionData.error).message,
         closeButton: true,
       });
@@ -35,16 +52,16 @@ export default function NewApplication() {
         Object.entries(actionData.lastSubmission).forEach(
           ([key, value]: any) => {
             form.setValue(key, value);
-          },
+          }
         );
       }
     }
     if (actionData?.data) {
-      sonner.toast.success('Cadastro realizado com sucesso', {
-        description: 'Aplicação cadastrada com sucesso',
+      sonner.toast.success("Cadastro realizado com sucesso", {
+        description: "Aplicação cadastrada com sucesso",
         closeButton: true,
       });
-      redirect('/applications');
+      redirect("/applications");
     }
   }, [actionData]);
 
@@ -53,7 +70,7 @@ export default function NewApplication() {
     Object.entries(values).forEach(([key, value]: any) => {
       formData.append(key, value);
     });
-    submit(formData, { method: 'post', replace: true });
+    submit(formData, { method: "post", replace: true });
   };
 
   return (
@@ -61,8 +78,8 @@ export default function NewApplication() {
       <div className="w-full flex flex-col justify-center items-center pt-3 pb-5 space-y-2">
         <div className="w-full flex justify-start items-center space-x-2">
           <Button
-            variant={'ghost'}
-            size={'icon'}
+            variant={"ghost"}
+            size={"icon"}
             onClick={goBack}
             className="h-8 w-8"
           >
@@ -78,7 +95,10 @@ export default function NewApplication() {
         <Card className="w-full">
           <CardContent className="space-y-4 flex flex-col justify-start items-start">
             <Form {...form}>
-              <form className="space-y-4 w-full" onSubmit={form.handleSubmit(onSubmit)}>
+              <form
+                className="space-y-4 w-full"
+                onSubmit={form.handleSubmit(onSubmit)}
+              >
                 <FormField
                   control={form.control}
                   name="name"
@@ -96,8 +116,7 @@ export default function NewApplication() {
                       </FormControl>
                     </FormItem>
                   )}
-                >
-                </FormField>
+                ></FormField>
                 <FormField
                   control={form.control}
                   name="description"
@@ -115,18 +134,17 @@ export default function NewApplication() {
                       </FormControl>
                     </FormItem>
                   )}
-                >
-                </FormField>
+                ></FormField>
 
                 <Button
                   type="submit"
                   className="w-full"
-                  disabled={transition.state === 'submitting'}
+                  disabled={transition.state === "submitting"}
                 >
-                  {transition.state === 'submitting' && (
+                  {transition.state === "submitting" && (
                     <Icons.Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
-                  {transition.state === 'submitting' ? 'Enviando...' : 'Enviar'}
+                  {transition.state === "submitting" ? "Enviando..." : "Enviar"}
                 </Button>
               </form>
             </Form>
@@ -142,7 +160,7 @@ export async function action({ request }: { request: Request }) {
   try {
     const service = new ApplicationService();
     const response = await service.add(values);
-    return json({ error: '', lastSubmission: '', data: response });
+    return json({ error: "", lastSubmission: "", data: response });
   } catch (error) {
     return json({ error, lastSubmission: values, data: false });
   }
