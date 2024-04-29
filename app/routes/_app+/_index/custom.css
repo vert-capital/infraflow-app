@@ -1,3 +1,8 @@
 #content-main {
   height: calc(100vh - 6rem);
 }
+
+.wrapper {
+  flex-grow: 1;
+  height: 100%;
+}

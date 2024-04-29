@@ -1,14 +1,6 @@
 import { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { MetaFunction, useLoaderData } from "@remix-run/react";
-import { useCallback, useState } from "react";
-import ReactFlow, {
-  Controls,
-  addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
-} from "reactflow";
-import { EdgeModel } from "~/models/edge.model";
-import { NodeModel } from "~/models/node.model";
+import { MetaFunction } from "@remix-run/react";
+import FlowManager from "~/components/FlowManager";
 import { EdgeService } from "~/services/edge.service";
 import { NodeService } from "~/services/node.service";
 import customStyle from "./custom.css?url";
@@ -37,38 +29,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export default function Index() {
-  const { nodes, edges } = useLoaderData<typeof loader>();
-
-  const [stateNodes, setStateNodes] = useState<NodeModel[]>(nodes);
-  const [stateEdges, setStateEdges] = useState<EdgeModel[]>(edges);
-
-  const onNodesChange = useCallback(
-    (changes) => setStateNodes((nds) => applyNodeChanges(changes, nds)),
-    [setStateNodes]
-  );
-  const onEdgesChange = useCallback(
-    (changes) => setStateEdges((eds) => applyEdgeChanges(changes, eds)),
-    [setStateEdges]
-  );
-  const onConnect = useCallback(
-    (connection) => setStateEdges((eds) => addEdge(connection, eds)),
-    [setStateEdges]
-  );
-
   return (
     <div id="content-main" className="w-full">
       <div className="w-full">
-        <ReactFlow
-          nodes={stateNodes}
-          edges={stateEdges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          fitView
-          className="absolute object-center	items-center"
-        >
-          <Controls />
-        </ReactFlow>
+        <FlowManager />
       </div>
     </div>
   );
