@@ -1,11 +1,11 @@
 import { ReactFlowProvider } from "reactflow";
 
-import NodeAddManager from "./NodeAddManager";
+import NodeFlowManager from "./NodeFlowManager";
 
 export default function FlowManager() {
   return (
     <ReactFlowProvider>
-      <NodeAddManager />
+      <NodeFlowManager />
     </ReactFlowProvider>
   );
 }
