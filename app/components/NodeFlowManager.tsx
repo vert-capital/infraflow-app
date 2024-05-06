@@ -1,9 +1,9 @@
 import { useCallback, useRef, useState } from "react";
 import ReactFlow, {
   Background,
-  Connection,
-  Edge,
+  ConnectionMode,
   EdgeChange,
+  MarkerType,
   Node,
   NodeChange,
   ReactFlowInstance,
@@ -19,6 +19,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useFlowManager } from "~/common/useFlowManager";
 import DemoControls from "./DemoControls";
 
+import FloatingEdge from "./Edges/FloatingEdge";
 import { DatabaseNode, DefaultNode } from "./Nodes";
 import { NodeTypes } from "./Nodes/types";
 
@@ -27,6 +28,10 @@ const connectionLineStyle = { stroke: "#000" };
 const nodeTypes = {
   [NodeTypes.CUSTOM]: DefaultNode,
   [NodeTypes.DATABASE]: DatabaseNode,
+};
+
+const edgeTypes = {
+  floating: FloatingEdge,
 };
 
 const NodeFlowManager = () => {
@@ -38,8 +43,18 @@ const NodeFlowManager = () => {
   const [edges, setEdges] = useEdgesState(store.edges);
 
   const onConnect = useCallback(
-    (params: Edge | Connection) => setEdges((els) => addEdge(params, els)),
-    [setEdges]
+    (params) =>
+      setEdges((eds) =>
+        addEdge(
+          {
+            ...params,
+            type: "floating",
+            markerEnd: { type: MarkerType.Arrow },
+          },
+          eds
+        )
+      ),
+    []
   );
 
   const onNodesChange = useCallback(
@@ -129,6 +144,18 @@ const NodeFlowManager = () => {
     );
   };
 
+  const resetState = () => {
+    store.setCurrentNode(null);
+    setNodes((nds) =>
+      nds.map((n) => {
+        if (n.data.isEditing) {
+          n.data.isEditing = false;
+        }
+        return n;
+      })
+    );
+  };
+
   return (
     <>
       <DemoControls />
@@ -142,10 +169,12 @@ const NodeFlowManager = () => {
           onNodeDoubleClick={(_, node) =>
             setEditingNode({ node, data: { ...node.data, isEditing: true } })
           }
-          onPaneClick={(_, node) => setEditingNode({ node: null, data: {} })}
+          onPaneClick={() => resetState()}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
           connectionLineStyle={connectionLineStyle}
+          connectionMode={ConnectionMode.Loose}
           onInit={setReactFlowInstance}
           onDrop={onDrop}
           onDragOver={onDragOver}

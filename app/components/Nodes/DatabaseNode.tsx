@@ -7,17 +7,31 @@ function DatabaseNode({ ...props }) {
     <div className="px-4 py-2 shadow-md rounded-md bg-white border-2 border-stone-400">
       <div className="flex">
         <Icons.Database color="teal"></Icons.Database>
-        {JSON.stringify(props)}
+        {props.data.label}
       </div>
       <Handle
-        type="target"
+        type="source"
         position={Position.Top}
-        className="w-16 !bg-teal-500"
+        isConnectable={props.isConnectable}
+        id="a"
+      />
+      <Handle
+        type="source"
+        position={Position.Left}
+        id="b"
+        isConnectable={props.isConnectable}
       />
       <Handle
         type="source"
         position={Position.Bottom}
-        className="w-16 !bg-teal-500"
+        id="c"
+        isConnectable={props.isConnectable}
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="d"
+        isConnectable={props.isConnectable}
       />
     </div>
   );
