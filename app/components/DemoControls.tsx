@@ -1,11 +1,17 @@
 import { DragEvent, useState } from "react";
-import { useFlowManager } from "~/common/useFlowManager";
+import { useShallow } from "zustand/react/shallow";
+import { FlowStore, useFlowStore } from "~/common/store";
 import { NodeTypes } from "./Nodes/types";
 
 export default function DemoControls() {
-  const store = useFlowManager();
+  const store = useFlowStore();
+  const selector = (state: FlowStore) => ({
+    addNode: state.addNode,
+  });
+
+  const { addNode } = useFlowStore(useShallow(selector));
+
   const [debug, setDebug] = useState(false);
-  const [currentNode, setCurrentNode] = useState(false);
 
   const onDragStart = (event: DragEvent<HTMLDivElement>, nodeType: string) => {
     event.dataTransfer.setData("application/reactflow", nodeType);
@@ -30,14 +36,6 @@ export default function DemoControls() {
         id=""
       />
       Mostrar state
-      <input
-        onChange={() => setCurrentNode(!debug)}
-        className="mx-2"
-        type="checkbox"
-        name=""
-        id=""
-      />
-      Mostrar current node
       <div className="flex items-center gap-2">
         <div className="flex gap-5">
           Nodes types (arraste e solte):
@@ -58,7 +56,7 @@ export default function DemoControls() {
         </div>
         <button
           className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow"
-          onClick={() => store.addNode(node)}
+          onClick={() => addNode(node)}
         >
           Add node (random)
         </button>
@@ -71,11 +69,6 @@ export default function DemoControls() {
       </div>
       {debug && (
         <pre className="text-xxs">{JSON.stringify(store.nodes, null, 2)}</pre>
-      )}
-      {currentNode && (
-        <pre className="text-xxs">
-          Current node: {JSON.stringify(store.currentNode, null, 2)}
-        </pre>
       )}
     </div>
   );

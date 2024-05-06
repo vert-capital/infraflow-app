@@ -2,23 +2,18 @@ import { useCallback, useRef, useState } from "react";
 import ReactFlow, {
   Background,
   ConnectionMode,
-  EdgeChange,
+  Edge,
   MarkerType,
   Node,
-  NodeChange,
   ReactFlowInstance,
-  addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
-  useEdgesState,
-  useNodesState,
 } from "reactflow";
 
 import "reactflow/dist/style.css";
 import { v4 as uuidv4 } from "uuid";
-import { useFlowManager } from "~/common/useFlowManager";
+import { FlowStore, useFlowStore } from "~/common/store";
 import DemoControls from "./DemoControls";
 
+import { useShallow } from "zustand/react/shallow";
 import FloatingEdge from "./Edges/FloatingEdge";
 import { DatabaseNode, DefaultNode } from "./Nodes";
 import { NodeTypes } from "./Nodes/types";
@@ -35,36 +30,41 @@ const edgeTypes = {
 };
 
 const NodeFlowManager = () => {
-  const store = useFlowManager();
+  const selector = (state: FlowStore) => ({
+    nodes: state.nodes,
+    edges: state.edges,
+    onNodesChange: state.onNodesChange,
+    onEdgesChange: state.onEdgesChange,
+    onConnect: state.onConnect,
+    setNodes: state.setNodes,
+    addNode: state.addNode,
+    addEdge: state.addEdge,
+    setEdges: state.setEdges,
+  });
+
+  const {
+    nodes,
+    edges,
+    onNodesChange,
+    onEdgesChange,
+    setEdges,
+    addNode,
+    addEdge,
+    setNodes,
+  } = useFlowStore(useShallow(selector));
+
   const reactFlowWrapper = useRef(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
-  const [nodes, setNodes] = useNodesState(store.nodes);
-  const [edges, setEdges] = useEdgesState(store.edges);
-
-  const onConnect = useCallback(
-    (params) =>
-      setEdges((eds) =>
-        addEdge(
-          {
-            ...params,
-            type: "floating",
-            markerEnd: { type: MarkerType.Arrow },
-          },
-          eds
-        )
+  const handleConnection = useCallback(
+    (edge: Edge) =>
+      setEdges(
+        edges.concat({
+          ...edge,
+          type: "floating",
+          markerEnd: { type: MarkerType.Arrow },
+        })
       ),
-    []
-  );
-
-  const onNodesChange = useCallback(
-    (changes: NodeChange[]) =>
-      setNodes((nds) => applyNodeChanges(changes, nds)),
-    []
-  );
-  const onEdgesChange = useCallback(
-    (changes: EdgeChange[]) =>
-      setEdges((eds) => applyEdgeChanges(changes, eds)),
     []
   );
 
@@ -72,6 +72,13 @@ const NodeFlowManager = () => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
+
+  const addNewNode = useCallback(
+    (newNode: Node) => {
+      addNode(newNode);
+    },
+    [addNode]
+  );
 
   const onDrop = useCallback(
     (event) => {
@@ -94,37 +101,15 @@ const NodeFlowManager = () => {
         type,
         position,
         data: { label: `${type} node` },
+        style: {
+          width: 150,
+        },
       };
 
-      setNodes((nds) => nds.concat(newNode));
+      addNewNode(newNode);
     },
     [reactFlowInstance]
   );
-
-  // useEffect(() => {
-  //   setNodes((nds) =>
-  //     nds.map((node) => {
-  //       if (node.id === "1") {
-  //         node.data = {
-  //           ...node.data,
-  //           label: nodeName,
-  //         };
-  //       }
-
-  //       return node;
-  //     })
-  //   );
-  // }, [nodeName, setNodes]);
-
-  // const addNewNode = () => {
-  //   const newNode: Node = {
-  //     id: uuidv4(),
-  //     type: "input",
-  //     data: { label: `Node ${store.nodes.length + 1}` },
-  //     position: { x: 250, y: 5 },
-  //   };
-  //   store.addNode(newNode);
-  // };
 
   const setEditingNode = ({
     node = null,
@@ -133,9 +118,8 @@ const NodeFlowManager = () => {
     node: Node | null;
     data: any;
   }) => {
-    store.setCurrentNode(node);
-    setNodes((nds) =>
-      nds.map((n) => {
+    setNodes(
+      nodes.map((n) => {
         if (n.id === node?.id) {
           n.data = data;
         }
@@ -145,15 +129,12 @@ const NodeFlowManager = () => {
   };
 
   const resetState = () => {
-    store.setCurrentNode(null);
-    setNodes((nds) =>
-      nds.map((n) => {
-        if (n.data.isEditing) {
-          n.data.isEditing = false;
-        }
-        return n;
-      })
-    );
+    nodes.map((n) => {
+      if (n.data.isEditing) {
+        n.data.isEditing = false;
+      }
+      return n;
+    });
   };
 
   return (
@@ -170,7 +151,7 @@ const NodeFlowManager = () => {
             setEditingNode({ node, data: { ...node.data, isEditing: true } })
           }
           onPaneClick={() => resetState()}
-          onConnect={onConnect}
+          onConnect={handleConnection}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           connectionLineStyle={connectionLineStyle}
