@@ -1,10 +1,11 @@
+import { Link } from "@remix-run/react";
 import { Icons } from "@vert-capital/design-system-ui";
 import { memo, useState } from "react";
 import { Handle, Position, useReactFlow } from "reactflow";
 
-const DefaultNode = ({ selected, isConnectable, id, data }) => {
+const DefaultNode = ({ selected, connectable, id, data }) => {
   const selectedStyles = selected
-    ? "border-solid border-2 border-indigo-600 transition-all duration-100 ease-in-out"
+    ? "border-solid border-2 border-brand transition-all duration-100 ease-in-out"
     : "border-solid border-2 border-white-600";
 
   const [editInfo, setEditInfo] = useState(false);
@@ -13,6 +14,14 @@ const DefaultNode = ({ selected, isConnectable, id, data }) => {
   const { setNodes } = useReactFlow();
 
   const onSaveChanges = () => {
+    performUpdate({ label: label, isEditing: false });
+  };
+
+  const onCancelChanges = () => {
+    performUpdate({ isEditing: false });
+  };
+
+  const performUpdate = (data = {}) => {
     setNodes((nodes) =>
       nodes.map((node) => {
         if (node.id === id) {
@@ -20,8 +29,7 @@ const DefaultNode = ({ selected, isConnectable, id, data }) => {
             ...node,
             data: {
               ...node.data,
-              label: label,
-              isEditing: false,
+              ...data,
             },
           };
         }
@@ -51,13 +59,33 @@ const DefaultNode = ({ selected, isConnectable, id, data }) => {
             onChange={(e) => {
               setLabel(e.currentTarget.value);
             }}
-            className="nodrag min-w-11 border-2 border-gray-300 p-2 rounded-md"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                onSaveChanges({ isEditing: true });
+              } else if (e.key === "Escape") {
+                onCancelChanges();
+              }
+            }}
+            className="nodrag min-w-11 border-none bg-gray-200 outline-none p-2 h-7 rounded-md"
           />
 
-          <Icons.SaveAll
-            className="hover:text-indigo-500 cursor-pointer text-indigo-600 h-4"
-            onClick={() => onSaveChanges()}
-          />
+          <div className="flex ">
+            <Link
+              to=""
+              onClick={() => onCancelChanges()}
+              className="rounded-full"
+            >
+              <Icons.X className=" hover:text-black hover:bg-gray-200 rounded-md cursor-pointer text-brand p-1" />
+            </Link>
+
+            <Link
+              to=""
+              onClick={() => onSaveChanges()}
+              className="rounded-full"
+            >
+              <Icons.SaveIcon className=" hover:text-black hover:bg-gray-200 rounded-md cursor-pointer text-brand p-1" />
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="min-w-11 flex">
@@ -67,26 +95,26 @@ const DefaultNode = ({ selected, isConnectable, id, data }) => {
       <Handle
         type="source"
         position={Position.Top}
-        isConnectable={isConnectable}
+        isConnectable={connectable}
         id="a"
       />
       <Handle
         type="source"
         position={Position.Left}
         id="b"
-        isConnectable={isConnectable}
+        isConnectable={connectable}
       />
       <Handle
         type="source"
         position={Position.Bottom}
         id="c"
-        isConnectable={isConnectable}
+        isConnectable={connectable}
       />
       <Handle
         type="source"
         position={Position.Right}
         id="d"
-        isConnectable={isConnectable}
+        isConnectable={connectable}
       />
     </div>
   );

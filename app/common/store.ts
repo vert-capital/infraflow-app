@@ -16,6 +16,7 @@ import { create } from "zustand";
 export type FlowStore = {
   nodes: Node[];
   edges: Edge[];
+  user: { isSuperUser: boolean };
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   onConnect: OnConnect;
@@ -29,6 +30,9 @@ export type FlowStore = {
 export const useFlowStore = create<FlowStore>((set, get) => ({
   nodes: [],
   edges: [],
+  user: {
+    isSuperUser: false,
+  },
   onNodesChange: (changes: NodeChange[]) =>
     set({ nodes: applyNodeChanges(changes, get().nodes) }),
   onEdgesChange: (changes: EdgeChange[]) =>

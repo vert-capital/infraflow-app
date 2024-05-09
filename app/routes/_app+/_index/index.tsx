@@ -1,8 +1,10 @@
 import { LinksFunction, LoaderFunctionArgs } from "@remix-run/node";
-import { MetaFunction } from "@remix-run/react";
+import { MetaFunction, useLoaderData } from "@remix-run/react";
+import { useEffect } from "react";
+import { useShallow } from "zustand/react/shallow";
+import { FlowStore, useFlowStore } from "~/common/store";
 import FlowManager from "~/components/FlowManager";
-import { EdgeService } from "~/services/edge.service";
-import { NodeService } from "~/services/node.service";
+import { ManagerService } from "~/services/manager.service";
 import customStyle from "./custom.css?url";
 
 export const meta: MetaFunction = () => {
@@ -19,16 +21,28 @@ export const links: LinksFunction = () => [
 ];
 
 export async function loader({ request }: LoaderFunctionArgs) {
-  const service = new NodeService();
-  const edgeService = new EdgeService();
-  const nodes = await service.all(request);
-
-  const edges = await edgeService.all(request);
+  const manager = new ManagerService();
+  const nodes = await manager.getNodes(request);
+  const edges = await manager.getEdges(request);
 
   return { nodes: nodes, edges: edges };
 }
 
 export default function Index() {
+  const selector = (state: FlowStore) => ({
+    nodes: state.nodes,
+    edges: state.edges,
+    setNodes: state.setNodes,
+    setEdges: state.setEdges,
+  });
+  const data = useLoaderData();
+  const { setEdges, setNodes } = useFlowStore(useShallow(selector));
+
+  useEffect(() => {
+    setNodes(data.nodes);
+    setEdges(data.edges);
+  }, []);
+
   return (
     <div id="content-main" className="w-full">
       <div className="w-full">

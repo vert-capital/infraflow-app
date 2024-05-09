@@ -18,6 +18,7 @@
     "@vert-capital/common": "^1.0.0",
     "@vert-capital/design-system-ui": "^1.0.6",
     "isbot": "^4.1.0",
+    "json-server": "1.0.0-alpha.23",
     "react": "^18.2.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "^18.2.0",

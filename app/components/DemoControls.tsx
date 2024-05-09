@@ -20,7 +20,7 @@ export default function DemoControls() {
 
   const node = {
     id: "input",
-    type: "input",
+    type: "custom",
     data: { label: "Input Node" },
     position: { x: 0, y: 50 },
   };
@@ -68,7 +68,10 @@ export default function DemoControls() {
         </button>
       </div>
       {debug && (
-        <pre className="text-xxs">{JSON.stringify(store.nodes, null, 2)}</pre>
+        <div>
+          <pre className="text-xxs">{JSON.stringify(store.nodes, null, 2)}</pre>
+          <pre className="text-xxs">{JSON.stringify(store.edges, null, 2)}</pre>
+        </div>
       )}
     </div>
   );

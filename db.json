@@ -1,0 +1,46 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "type": "custom",
+      "data": { "label": "Input" },
+      "position": { "x": 250, "y": 25 },
+      "style": { "width": 250 }
+    },
+
+    {
+      "id": "2",
+      "data": { "label": "Default" },
+      "type": "custom",
+      "position": { "x": 100, "y": 125 }
+    },
+    {
+      "id": "3",
+      "type": "database",
+      "data": { "label": "Output" },
+      "position": { "x": 250, "y": 250 }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1-2",
+      "source": "1",
+      "target": "2",
+      "animated": true,
+      "sourceHandle": "c",
+      "targetHandle": "a",
+      "type": "floating",
+      "markerEnd": { "type": "arrowclosed" }
+    },
+    {
+      "id": "e2-3",
+      "source": "2",
+      "target": "3",
+      "sourceHandle": "c",
+      "targetHandle": "a",
+      "type": "floating",
+      "markerEnd": { "type": "arrowclosed" }
+    }
+  ],
+  "isSuperUser": true
+}

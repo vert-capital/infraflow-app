@@ -11,9 +11,9 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import { v4 as uuidv4 } from "uuid";
 import { FlowStore, useFlowStore } from "~/common/store";
-import DemoControls from "./DemoControls";
 
 import { useShallow } from "zustand/react/shallow";
+import DemoControls from "./DemoControls";
 import FloatingEdge from "./Edges/FloatingEdge";
 import { DatabaseNode, DefaultNode } from "./Nodes";
 import { NodeTypes } from "./Nodes/types";
@@ -49,7 +49,6 @@ const NodeFlowManager = () => {
     onEdgesChange,
     setEdges,
     addNode,
-    addEdge,
     setNodes,
   } = useFlowStore(useShallow(selector));
 
