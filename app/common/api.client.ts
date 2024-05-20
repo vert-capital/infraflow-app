@@ -4,18 +4,18 @@ export default async function apiClient<T>(
 ): Promise<T> {
   const res = await fetch(input, {
     ...init,
-    method: !init?.method ? 'GET' : init.method,
+    method: !init?.method ? "GET" : init.method,
   });
-  const contentType = res.headers.get('content-type');
+  const contentType = res.headers.get("content-type");
   if (!res.ok) {
-    if (!contentType?.includes('application/json')) {
+    if (!contentType?.includes("application/json")) {
       throw await res.text();
     } else {
       throw await res.json();
     }
   }
   let result: any = {};
-  if (!contentType?.includes('application/json')) {
+  if (!contentType?.includes("application/json")) {
     result = await res.text();
   } else {
     result = await res.json();
