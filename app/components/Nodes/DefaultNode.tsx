@@ -48,7 +48,7 @@ const DefaultNode = ({ selected, connectable, id, data }) => {
     <div
       onMouseEnter={() => setEditInfo(true)}
       onMouseLeave={() => setEditInfo(false)}
-      className={`"${selectedStyles} px-5 py-2  bg-white rounded-lg shadow-md"`}
+      className={`"${selectedStyles} px-5 py-2  bg-white rounded-lg shadow-md z-10"`}
     >
       {editInfo && !data.isEditing && (
         <span className="absolute right-0 top-0 text-[7px] text-gray-400 mx-2 italic">

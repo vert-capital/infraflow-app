@@ -46,6 +46,15 @@
   position: absolute !important;
 }
 
+.react-flow__node,
+.react-flow__node.selected {
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
 .react-flow__node-tools {
   border: 1px solid #333;
   background: white;

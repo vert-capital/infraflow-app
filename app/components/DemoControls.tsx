@@ -20,7 +20,7 @@ export default function DemoControls() {
 
   const node = {
     id: "input",
-    type: "custom",
+    type: "default",
     data: { label: "Input Node" },
     position: { x: 0, y: 50 },
   };
@@ -41,17 +41,17 @@ export default function DemoControls() {
           Nodes types (arraste e solte):
           <div
             className="bg-sky-5 bg-slate-700 text-white p-1 cursor-move"
-            onDragStart={(event) => onDragStart(event, NodeTypes.CUSTOM)}
+            onDragStart={(event) => onDragStart(event, NodeTypes.DEFAULT)}
             draggable
           >
-            Custom node
+            Default node
           </div>
           <div
             className="bg-sky-5 bg-sky-700 text-white p-1 cursor-move"
-            onDragStart={(event) => onDragStart(event, NodeTypes.DATABASE)}
+            onDragStart={(event) => onDragStart(event, NodeTypes.GROUP)}
             draggable
           >
-            Database node
+            Group node
           </div>
         </div>
         <button

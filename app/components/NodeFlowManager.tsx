@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ReactFlow, {
   Background,
   ConnectionMode,
@@ -14,14 +14,14 @@ import { FlowStore, useFlowStore } from "~/common/store";
 
 import { useShallow } from "zustand/react/shallow";
 import FloatingEdge from "./Edges/FloatingEdge";
-import { DatabaseNode, DefaultNode } from "./Nodes";
+import { DefaultNode, GroupNode } from "./Nodes";
 import { NodeTypes } from "./Nodes/types";
 
 const connectionLineStyle = { stroke: "#000" };
 
 const nodeTypes: any = {
-  [NodeTypes.CUSTOM]: DefaultNode,
-  [NodeTypes.DATABASE]: DatabaseNode,
+  [NodeTypes.DEFAULT]: DefaultNode,
+  [NodeTypes.GROUP]: GroupNode,
 };
 
 const edgeTypes = {
@@ -30,7 +30,9 @@ const edgeTypes = {
 
 const NodeFlowManager = () => {
   const selector = (state: FlowStore) => ({
-    nodes: state.nodes,
+    nodes: state.nodes.sort((a, b) =>
+      !!a.parentNode && !b.parentNode ? 1 : -1
+    ),
     edges: state.edges,
     onNodesChange: state.onNodesChange,
     onEdgesChange: state.onEdgesChange,
@@ -52,10 +54,12 @@ const NodeFlowManager = () => {
   } = useFlowStore(useShallow(selector));
 
   const reactFlowWrapper = useRef(null);
+  const dragRef = useRef(null);
+  const [target, setTarget] = useState<Node | null>(null);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [formControl, setFormControl] = useState({
     label: "",
-    type: NodeTypes.CUSTOM,
+    type: NodeTypes.DEFAULT,
   });
 
   const handleConnection = useCallback(
@@ -83,14 +87,20 @@ const NodeFlowManager = () => {
       y: event.clientY,
     });
 
-    const newNode = {
+    const styles = {
+      width: formControl.type === NodeTypes.DEFAULT ? 250 : 300,
+      height: formControl.type === NodeTypes.GROUP ? 250 : null,
+    };
+
+    const newNode: Node = {
       id: uuidv4(),
       type: formControl.type,
       position,
-      data: { label: `${formControl.type} node` },
-      style: {
-        width: 150,
+      data: {
+        label: `${formControl.type} node`,
+        resizable: formControl.type === NodeTypes.GROUP ? true : false,
       },
+      style: styles,
     };
 
     addNewNode(newNode);
@@ -101,37 +111,6 @@ const NodeFlowManager = () => {
       addNode(newNode);
     },
     [addNode]
-  );
-
-  const onDrop = useCallback(
-    (event) => {
-      event.preventDefault();
-
-      const type = event.dataTransfer.getData("application/reactflow");
-
-      if (typeof type === "undefined" || !type) {
-        return;
-      }
-
-      const position = (
-        reactFlowInstance as unknown as ReactFlowInstance
-      )?.screenToFlowPosition({
-        x: event.clientX,
-        y: event.clientY,
-      });
-      const newNode = {
-        id: uuidv4(),
-        type,
-        position,
-        data: { label: `${type} node` },
-        style: {
-          width: 150,
-        },
-      };
-
-      addNewNode(newNode);
-    },
-    [reactFlowInstance]
   );
 
   const setEditingNode = ({
@@ -160,25 +139,84 @@ const NodeFlowManager = () => {
     });
   };
 
-  const onAddNewGroup = useCallback(() => {
-    const groupNode = {
-      id: uuidv4(),
-      data: { label: "Group A" },
-      position: { x: 100, y: 100 },
-      className: "light",
+  const onNodeDragStart = (evt, node) => {
+    dragRef.current = node;
+  };
+
+  const onNodeDrag = (evt, node) => {
+    // calculate the center point of the node from position and dimensions
+    const centerX = node.position.x + node.width / 2;
+    const centerY = node.position.y + node.height / 2;
+
+    // find a node where the center point is inside
+    const targetNode = nodes.find(
+      (n) =>
+        centerX > n.position.x &&
+        centerX < n.position.x + n.width &&
+        centerY > n.position.y &&
+        centerY < n.position.y + n.height &&
+        n.id !== node.id // this is needed, otherwise we would always find the dragged node
+    );
+
+    const targetStyled = {
+      ...targetNode,
       style: {
-        backgroundColor: "rgba(255, 0, 0, 0.2)",
-        width: 200,
-        height: 200,
+        ...targetNode?.style,
+        backgroundColor: "black",
+        borderStyle: "dotted",
       },
     };
-    addNode(groupNode);
-  }, [addNode]);
+
+    setTarget(targetStyled);
+  };
+
+  const onNodeDragStop = (evt, node: Node) => {
+    setNodes(
+      nodes.map((n) => {
+        if (n.id === node.id && target?.type === NodeTypes.GROUP) {
+          n.parentNode = target.id;
+        }
+        return n;
+      })
+    );
+
+    setTarget(null);
+    dragRef.current = null;
+  };
+
+  useEffect(() => {
+    console.log(nodes);
+    // setNodes(
+    //   nodes.map((n) => {
+    //     if (n.id === node.id && target?.type === NodeTypes.GROUP) {
+    //       n.parentNode = target.id;
+    //     }
+    //     return n;
+    //   })
+    // );
+    // setNodes(
+    //   (nodes) => console.log("changed")
+    //   // nodes.map((node) => {
+    //   //   if (node.id === target?.id) {
+    //   //     node.style = {
+    //   //       ...node.style,
+    //   //       backgroundColor: dragRef.current?.data.color,
+    //   //     };
+    //   //     node.data = { ...node.data, label: dragRef.current?.data.color };
+    //   //   } else if (node.id === dragRef.current?.id && target) {
+    //   //     node.style = { ...node.style, backgroundColor: target.data.color };
+    //   //     node.data = { ...node.data, label: target.data.color };
+    //   //   } else {
+    //   //     node.style = { ...node.style, backgroundColor: node.data.color };
+    //   //     node.data = { ...node.data, label: node.data.color };
+    //   //   }
+    //   //   return node;
+    //   // })
+    // );
+  }, [nodes]);
 
   return (
     <>
-      {/* <DemoControls /> */}
-
       <div className="text-md flex fixed rounded-md bg-white z-40 py-3 px-10 gap-3">
         <label className="font-bold" htmlFor="label">
           Label:
@@ -203,15 +241,9 @@ const NodeFlowManager = () => {
             setFormControl({ ...formControl, type: e.target.value })
           }
         >
-          <option value="custom">Custom</option>
-          <option value="database">Database</option>
+          <option value="default">Default</option>
+          <option value="group">Grupo</option>
         </select>
-        <button
-          onClick={onAddNewGroup}
-          className="bg-foreground rounded-md px-3 text-white hover:opacity-75"
-        >
-          Adicionar grupo
-        </button>
         <button
           onClick={onAddNewNode}
           className="bg-brand rounded-md px-3 text-white hover:opacity-75"
@@ -236,8 +268,9 @@ const NodeFlowManager = () => {
           connectionLineStyle={connectionLineStyle}
           connectionMode={ConnectionMode.Loose}
           onInit={setReactFlowInstance}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
+          onNodeDragStart={onNodeDragStart}
+          onNodeDrag={onNodeDrag}
+          onNodeDragStop={onNodeDragStop}
           fitView
         >
           <Background />

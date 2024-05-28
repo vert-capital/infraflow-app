@@ -2,7 +2,7 @@
   "nodes": [
     {
       "id": "1",
-      "type": "custom",
+      "type": "default",
       "data": { "label": "Input" },
       "position": { "x": 250, "y": 25 },
       "style": { "width": 250 }
@@ -11,14 +11,20 @@
     {
       "id": "2",
       "data": { "label": "Default" },
-      "type": "custom",
+      "type": "default",
       "position": { "x": 100, "y": 125 }
     },
     {
       "id": "3",
-      "type": "database",
+      "type": "group",
       "data": { "label": "Output" },
-      "position": { "x": 250, "y": 250 }
+      "position": { "x": 250, "y": 250 },
+      "className": "light",
+      "style": {
+        "backgroundColor": "rgba(255, 0, 0, 0.2)",
+        "width": 300,
+        "height": 300
+      }
     }
   ],
   "edges": [

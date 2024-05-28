@@ -1,4 +1,4 @@
 export enum NodeTypes {
-  DATABASE = "database",
-  CUSTOM = "custom",
+  GROUP = "group",
+  DEFAULT = "default",
 }
